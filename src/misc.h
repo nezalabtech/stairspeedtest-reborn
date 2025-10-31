@@ -374,6 +374,8 @@ static inline int md(const char *path)
 #endif // _WIN32
 }
 
+std::string getCurrentTime();
+
 #ifdef _WIN32
 void StringToWstring(std::wstring& szDst, const std::string &str);
 #endif // _WIN32

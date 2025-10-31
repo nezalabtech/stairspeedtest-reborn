@@ -48,6 +48,7 @@ ADD_EXECUTABLE(stairspeedtest
 	src/socket.cpp
 	src/speedtestutil.cpp
 	src/tcping.cpp
+	src/telegram.cpp
 	src/webget.cpp
 	src/webgui_wrapper.cpp
 	src/webserver_libevent.cpp)

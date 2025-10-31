@@ -29,6 +29,7 @@
 #include "ini_reader.h"
 #include "multithread_test.h"
 #include "nodeinfo.h"
+#include "telegram.h"
 
 using namespace std::chrono;
 
@@ -799,6 +800,24 @@ void batchTest(std::vector<nodeInfo> &nodes)
             printMsg(SPEEDTEST_MESSAGE_PICSAVED, rpcmode, pngpath);
             if(rpcmode)
                 printMsg(SPEEDTEST_MESSAGE_PICDATA, rpcmode, "data:image/png;base64," + fileToBase64(pngpath));
+            
+            // Send to Telegram if enabled
+            if(isTelegramEnabled())
+            {
+                writeLog(LOG_TYPE_INFO, "Sending result to Telegram...");
+                std::string caption = "";
+                if(getTelegramSendCaption())
+                    caption = generateResultCaption(nodes, custom_group);
+                
+                if(sendTelegramPhoto(getTelegramBotToken(), getTelegramChatId(), pngpath, caption))
+                {
+                    writeLog(LOG_TYPE_INFO, "Successfully sent result to Telegram");
+                }
+                else
+                {
+                    writeLog(LOG_TYPE_ERROR, "Failed to send result to Telegram");
+                }
+            }
         }
     }
     cur_node_id = -1;
@@ -1115,6 +1134,24 @@ int main(int argc, char* argv[])
                 writeLog(LOG_TYPE_INFO, "Result saved to " + pngpath + " .");
                 if(rpcmode)
                     printMsg(SPEEDTEST_MESSAGE_PICDATA, rpcmode, "data:image/png;base64," + fileToBase64(pngpath));
+                
+                // Send to Telegram if enabled
+                if(isTelegramEnabled())
+                {
+                    writeLog(LOG_TYPE_INFO, "Sending multilink result to Telegram...");
+                    std::string caption = "";
+                    if(getTelegramSendCaption())
+                        caption = generateResultCaption(allNodes, "Multilink Test");
+                    
+                    if(sendTelegramPhoto(getTelegramBotToken(), getTelegramChatId(), pngpath, caption))
+                    {
+                        writeLog(LOG_TYPE_INFO, "Successfully sent multilink result to Telegram");
+                    }
+                    else
+                    {
+                        writeLog(LOG_TYPE_ERROR, "Failed to send multilink result to Telegram");
+                    }
+                }
             }
             else
             {
@@ -1134,6 +1171,24 @@ int main(int argc, char* argv[])
                         pngpath = exportRender(curPNGPath, nodes, export_with_maxspeed, export_sort_method, export_color_style, export_as_new_style, test_nat_type);
                         printMsg(SPEEDTEST_MESSAGE_PICSAVEDMULTI, rpcmode, std::to_string(i + 1), pngpath);
                         writeLog(LOG_TYPE_INFO, "Group " + std::to_string(i + 1) + " result saved to " + pngpath + " .");
+                        
+                        // Send to Telegram if enabled
+                        if(isTelegramEnabled())
+                        {
+                            writeLog(LOG_TYPE_INFO, "Sending group " + std::to_string(i + 1) + " result to Telegram...");
+                            std::string caption = "";
+                            if(getTelegramSendCaption())
+                                caption = generateResultCaption(nodes, "Group " + std::to_string(i + 1));
+                            
+                            if(sendTelegramPhoto(getTelegramBotToken(), getTelegramChatId(), pngpath, caption))
+                            {
+                                writeLog(LOG_TYPE_INFO, "Successfully sent group " + std::to_string(i + 1) + " result to Telegram");
+                            }
+                            else
+                            {
+                                writeLog(LOG_TYPE_ERROR, "Failed to send group " + std::to_string(i + 1) + " result to Telegram");
+                            }
+                        }
                     }
                     else
                         writeLog(LOG_TYPE_INFO, "Group " + std::to_string(i + 1) + " result export skipped.");

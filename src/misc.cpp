@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include <iomanip>
 //#include <filesystem>
 #include <unistd.h>
 #include <stdarg.h>
@@ -1252,4 +1253,13 @@ void ProcessEscapeCharReverse(std::string &str)
         }
         pos++;
     }
+}
+
+std::string getCurrentTime()
+{
+    auto now = std::chrono::system_clock::now();
+    auto time_t_now = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S");
+    return ss.str();
 }
