@@ -5,6 +5,10 @@ build-*/
 # Base directory (contains binaries and runtime files)
 base/
 
+# Temporary build dependencies
+pngwriter/
+yaml-cpp/
+
 # IDE and editor files
 .vscode/
 .idea/
